@@ -1,2 +1,3 @@
 *.test
 *memprofile
+launch.json
