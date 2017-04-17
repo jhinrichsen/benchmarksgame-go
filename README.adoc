@@ -3,3 +3,58 @@
 Go implementations for Benchmarksgame (aka language shootout)
 
 http://benchmarksgame.alioth.debian.org[Benchmarksgame]
+
+== thread-ring
+
+This benchmark should be the ideal candidate to showcase CSP concepts in Go. In
+theory, Go should blow away any other programming langage that relies on OS
+threading. However, Go only rates second after Haskell. Haskell makes use of
+`lightweight, unbound threads` which are not OS threads, so that makes sense.
+So, the goal is to close the gap between Haskell's 9:45, and Go's 14:71 [s].
+
+
+== Timings
+
+
+=== Running the original thread-ring #6
+----
+$ go test -bench=. -cpu=1,2,4,8
+BenchmarkThreadRing6     	       1	24494436828 ns/op
+BenchmarkThreadRing6-2   	       1	17444699100 ns/op
+BenchmarkThreadRing6-4   	       1	22363000889 ns/op
+BenchmarkThreadRing6-8   	       1	26643745947 ns/op
+PASS
+----
+
+That's 24, 17, 22, and 26 s for 1, 2, 4 and 8 CPUs. The benchmark's result for a
+fixed GOMAXPROCS=1 is 14s, so my testbed is approx. 1.7 times slower.
+
+If the benchmark is run with one CPU only, the result is
+----
+go test -bench=. -cpu=1  
+BenchmarkThreadRing6 	       1	5956264597 ns/op
+PASS
+----
+Under 6 seconds. A quarter of the original 24x without any source code change.
+This might be a result of the package scope variable `res`, a `chan int` which
+is re-used between benchmark runs.
+
+=== Change #1
+
+Refactor the package variable into a function parameter. Does not influence the
+result, still 6 s for a 1 CPU test run, and 24 s for a multiple CPU run.
+
+TODO find out where this difference stems from.
+
+== Performance improvement #1
+
+Many Go implementations make use of a synchronized struct T.
+
+
+== Testbed
+
+- Macbook Pro late 2013, 2,3 GHz Intel Core i7 running MacOS Sierra 10.12.4
+- Homebrew's golang 1.8.1
+----
+go version go1.8.1 darwin/amd64
+----
