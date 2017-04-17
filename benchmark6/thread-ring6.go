@@ -5,7 +5,7 @@
    modified by fwip
 */
 
-package benchmark6
+package main
 
 import (
 	"fmt"
