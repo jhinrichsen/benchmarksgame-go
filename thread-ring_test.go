@@ -30,8 +30,28 @@ func TestThreadRingLong(t *testing.T) {
 	}
 }
 */
-func BenchmarkThreadRing(b *testing.B) {
+func BenchmarkThreadRingE2(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		threadRing(5e2)
+	}
+}
+func BenchmarkThreadRingE3(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		threadRing(5e3)
+	}
+}
+func BenchmarkThreadRingE4(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		threadRing(5e4)
+	}
+}
+func BenchmarkThreadRingE5(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		threadRing(5e5)
+	}
+}
+func BenchmarkThreadRingE6(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		threadRing(5e6)
 	}
 }
