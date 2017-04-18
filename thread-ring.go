@@ -7,25 +7,26 @@ import (
 )
 
 const threads = 503
+const size = 503
 
 func main() {
 	n := 1000
 	if len(os.Args) > 1 {
 		n, _ = strconv.Atoi(os.Args[1])
 	}
-	fmt.Printf("%v\n", threadRing(n))
+	fmt.Printf("%v\n", threadRing(n, 0))
 }
 
-func mkChannels() (channels [threads]chan int) {
+func mkChan(size int) (channels [threads]chan int) {
 	for i := 0; i < threads; i++ {
-		channels[i] = make(chan int)
+		channels[i] = make(chan int, size)
 	}
 	return
 }
 
-func threadRing(n int) int {
+func threadRing(n int, size int) int {
 	rc := make(chan int)
-	cs := mkChannels()
+	cs := mkChan(size)
 	for i := 0; i < threads; i++ {
 		go pass(n, cs[i], cs[(i+1)%threads], rc)
 	}
