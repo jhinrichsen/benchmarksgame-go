@@ -58,3 +58,62 @@ Many Go implementations make use of a synchronized struct T.
 ----
 go version go1.8.1 darwin/amd64
 ----
+
+== My version
+
+nice, nay?
+
+----
+package main
+
+import (
+        "fmt"
+        "log"
+        "os"
+        "strconv"
+)
+
+const ringsize = 503
+
+func ThreadRing(n int) (chan int, chan int) {
+        mkch := func() chan int {
+                c := make(chan int)
+                return c
+        }
+        r := mkch()
+        link := func(from <-chan int, into chan<- int, id int) {
+                for {
+                        tk := <-from
+                        if tk == n {
+                                r <- id
+                        }
+                        into <- tk + 1
+                }
+        }
+        first := mkch()
+        left := first
+        for i := 1; i < ringsize; i++ {
+                right := mkch()
+                go link(left, right, i)
+                left = right
+        }
+        go link(left, first, 0)
+        return first, r
+}
+
+func main() {
+        n := 1000
+        if len(os.Args) == 2 {
+                s := os.Args[1]
+                m, err := strconv.Atoi(s)
+                if err == nil {
+                        n = m
+                } else {
+                        log.Printf("%s: reverting to default %d\n", err, n)
+                }
+        }
+        ring, rc := ThreadRing(n)
+        ring <- 0
+        fmt.Println(<-rc)
+}
+----
