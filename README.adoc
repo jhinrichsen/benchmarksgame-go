@@ -115,3 +115,15 @@ func main() {
         fmt.Println(<-rc)
 }
 ----
+
+In addition, 12 s on an `Intel(R) Xeon(R) CPU E5-2690 v4 @ 2.60GHz` vs. 13.69 s on an `2.4Ghz Intel Q6600` is fast, and would rank number two right after Haskell, which is the fastest as of this writing.
+https://benchmarksgame-team.pages.debian.net/benchmarksgame/performance/threadring.html[thread-ring].
+
+----
+$ time ./thread-ring 50000000
+292
+
+real    0m10.706s
+user    0m12.017s
+sys     0m0.738s
+----
