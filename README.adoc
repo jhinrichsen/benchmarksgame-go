@@ -103,8 +103,7 @@ func ThreadRing(n int) (chan int, chan int) {
 func main() {
         n := 1000
         if len(os.Args) == 2 {
-                s := os.Args[1]
-                m, err := strconv.Atoi(s)
+                m, err := strconv.Atoi(os.Args[1])
                 if err == nil {
                         n = m
                 } else {
