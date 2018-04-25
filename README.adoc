@@ -77,8 +77,7 @@ const ringsize = 503
 
 func ThreadRing(n int) (chan int, chan int) {
         mkch := func() chan int {
-                c := make(chan int)
-                return c
+                return make(chan int)
         }
         r := mkch()
         link := func(from <-chan int, into chan<- int, id int) {
